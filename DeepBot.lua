@@ -1,3 +1,4 @@
+-- some functions (the ones with _G.) were taken from https://gitlab.com/McModder/answernator# ;)
 local discordia = require('discordia')
 local colorize = require('pretty-print').colorize
 local fs = require("fs")
