@@ -115,21 +115,6 @@ client:on("messageCreate", function(message)
 
 	if message.author == client.user then return end
 
-
-
-	if cmd == ".prune" then
-		local number = tonumber(arg)
-		if not number:find("%d") then 
-			message.channel:sendMessage("Please use a number instead of a word.")
-			return
-		end
-		if HasRole(message.author) then
-			local messages = message.channel:getMessageHistory(number+1) 
-			message.channel:bulkDelete(messages)
-			sendAndDelete(message.channel, number .. " messages pruned.", 2500)
-		end
-	end
-
 	if cmd == ".add" then
 		local theRole = string.match(arg, "<@[%d]+> (.*)")
 		Roles = {}
@@ -270,7 +255,21 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage(":x: Only the owner of the server can run this command. :x:")
 		end
 	end
+	if cmd == ".prune" then
+		local number = arg
+		if number == nil then return end
+		if not number:find("%d") then
+			message.channel:sendMessage("Use a number, please.")
+			return
+		end
+		if HasRole(message.author) then
+			local messages = message.channel:getMessageHistory(number+1) 
+			message.channel:bulkDelete(messages)
+			sendAndDelete(message.channel, number .. " messages pruned.", 2500)
+		end
+	end
 	if cmd == ".tempMute" then
+		if arg == nil then return end
 		local timee = string.match(arg, "<@[%d]+> (.*)")
 		time = tonumber(timee)
 		if read_file(serverConfig.."Logs.txt") == nil then
@@ -301,11 +300,12 @@ client:on("messageCreate", function(message)
 		end
 	end
 	if cmd == ".mute" then
-		local reason = string.match(arg, "<@[%d]+> (.*)")
 		Roles = {}
-		if reason == nil then message.channel:sendMessage("Enter a reason, please.")
+		if reason == nil then 
+			message.channel:sendMessage("Enter a reason, please.")
 			return
 		end
+		local reason = string.match(arg, "<@[%d]+> (.*)")
 		if read_file(serverConfig.."Logs.txt") == nil then
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
 			return
@@ -357,11 +357,12 @@ client:on("messageCreate", function(message)
 		end
 	end
 	if cmd == ".kick" then
-		local reason = string.match(arg, "<@[%d]+> (.*)")
 		Roles = {}
-		if reason == nil then message.channel:sendMessage("Enter a reason, please.")
+		if reason == nil then 
+			message.channel:sendMessage("Enter a reason, please.")
 			return
 		end
+		local reason = string.match(arg, "<@[%d]+> (.*)")
 		if read_file(serverConfig.."Logs.txt") == nil then
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
 			return
@@ -378,10 +379,11 @@ client:on("messageCreate", function(message)
 		end
 	end
 	if cmd == ".ban" then
-		local reason = string.match(arg, "<@[%d]+> (.*)")
-		if reason == nil then message.channel:sendMessage("Enter a reason, please.")
+		if reason == nil then 
+			message.channel:sendMessage("Enter a reason, please.")
 			return
 		end
+		local reason = string.match(arg, "<@[%d]+> (.*)")
 		Roles = {}
 		if read_file(serverConfig.."Logs.txt") == nil then
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
