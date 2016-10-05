@@ -407,4 +407,4 @@ client:on("messageCreate", function(message)
 	end
 end)
 
-client:run("MjMyOTU5MTk0NDYwODQ4MTI4.CtWfrQ.o3xJ0DXRcGXRpa2oImCxi2RuTbQ")
+client:run("YourBotToken")
