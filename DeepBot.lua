@@ -119,6 +119,10 @@ client:on("messageCreate", function(message)
 
 	if cmd == ".prune" then
 		local number = tonumber(arg)
+		if not number:find("%d") then 
+			message.channel:sendMessage("Please use a number instead of a word.")
+			return
+		end
 		if HasRole(message.author) then
 			local messages = message.channel:getMessageHistory(number+1) 
 			message.channel:bulkDelete(messages)
@@ -407,4 +411,4 @@ client:on("messageCreate", function(message)
 	end
 end)
 
-client:run("YourBotToken")
+client:run(read_file("DeepBotToken.txt"))
