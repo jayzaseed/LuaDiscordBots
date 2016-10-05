@@ -2,6 +2,7 @@
 # LuaDiscordBots
 
 **These bots are running using Discordia (https://github.com/SinisterRectus/Discordia) Library**
+
 God bless SinisterRectus.
 
 **Discord API library written in Lua for the Luvit framework**
