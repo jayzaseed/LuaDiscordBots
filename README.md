@@ -1,3 +1,4 @@
+[![docs](https://img.shields.io/badge/docs-latest-green.svg?style=flat-square)](https://luvit.io/install.html)
 # LuaDiscordBots
 
 **These bots are running using Discordia Library**
