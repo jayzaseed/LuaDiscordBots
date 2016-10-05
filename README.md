@@ -1,6 +1,6 @@
 # LuaDiscordBots
 
-**These bots are running using Discordia Librari**
+**These bots are running using Discordia Library**
 
 **Discord API library written in Lua for the Luvit framework**
 
