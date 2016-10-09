@@ -11,6 +11,10 @@ require("lib/utf8")
 require("lib/utf8data")
 local client = discordia.Client:new()
 
+function date()
+	return os.date("[%d.%m.%y][%X]")
+end
+
 function printLog( text, logType ) -- pretty logs print
   logType = string.upper(logType or "INFO")
   local logColors = { INFO = "string", LOG = "string", WARN = "highlight", DEBUG= "highlight", ERR = "err", ERROR= "err", FAIL = "failure", FAILURE = "failure"}
@@ -32,6 +36,18 @@ function read_file(path)
 	return content
 end
 
+function WriteFile(path, file, text)
+	local file = io.open(path.."/"..file..".txt", "w")
+	file:write(text)
+	file:close()
+end
+
+function AddToFile(path, file, text)
+	local TeamsFile = io.open(path.."/"..file..".txt", "a")
+	TeamsFile:write(text.."\n")
+	TeamsFile:close()
+end
+
 
 -- PONER UN LOOP EN SERVERCONFIGURATION Y PONER: QUIEN TIENE PERMISOS PARA MANEJARLO OWNER + DEEPBOTGUIDES
 
@@ -49,10 +65,47 @@ end)
 
 client:on('serverCreate', function(newServer)
 	if not newServer then return end
+
+	local carpeta = "serverData/"..newServer.id.."/"
+	local serverConfig = carpeta.."ServerConfig/"
+
 	if not fs.existsSync("serverData/"..newServer.id) then 
 		print("new folder for "..newServer.name)  
 		fs.mkdirSync("serverData/"..newServer.id)
 		newServer.owner:sendMessage("New server I see... Steps to configure me:\n```Markdown\n#Run\n.ServerConfiguration to see all the configured data\n<<.Logs ChannelID>> to set up the channel for my moderating logs.\n<<.MuteRank RankName>> to set up the default rank when muting someone... \nSay in your server .help and I'll show you all of me ;)\n\n To give other mods access to the moderating commands you will have to create a role called 'DeepBotGuide' and give it to them. (you will need this role aswell).\n```")
+	end
+	if not fs.existsSync(carpeta.."ServerConfig") then
+		fs.mkdirSync(carpeta.."ServerConfig")
+		printLog("Carpeta Server config creada en "..newServer.name, "INFO")
+	end
+	if not fs.existsSync(serverConfig.."Logs.txt") then
+		local emptyFile = io.open(serverConfig.."Logs.txt", "w")
+		emptyFile:close()
+		printLog("Archivo Logs.txt creado en "..newServer.name, "INFO")
+	end
+	if not fs.existsSync(serverConfig.."MuteRank.txt") then
+		local emptyFile = io.open(serverConfig.."MuteRank.txt", "w")
+		emptyFile:close()
+		printLog("Archivo MuteRank.txt creado en "..newServer.name, "INFO")
+	end
+	if not fs.existsSync(serverConfig.."Welcome.txt") then
+		local emptyFile = io.open(serverConfig.."Welcome.txt", "w")
+		emptyFile:close()
+		printLog("Archivo Welcome.txt creado en "..newServer.name, "INFO")
+	end
+	if not fs.existsSync(carpeta.."Teams") then
+		printLog("Carpeta Teams creada en "..newServer.name, "INFO")
+		fs.mkdirSync(carpeta.."Teams")
+	end
+	if not fs.existsSync(carpeta.."Teams/Discorders.txt") then
+		local emptyFile = io.open(carpeta.."Teams/Discorders.txt", "w")
+		emptyFile:close()
+		printLog("Archivo Discorders.txt creado en "..newServer.name, "INFO")
+	end
+	if not fs.existsSync(carpeta.."Teams/Rioters.txt") then
+		local emptyFile = io.open(carpeta.."Teams/Rioters.txt", "w")
+		emptyFile:close()
+		printLog("Archivo Rioters.txt creado en "..newServer.name, "INFO")
 	end
 end)
 
@@ -62,6 +115,12 @@ client:on(
 	function()
 		p(string.format('Logged in as %s', client.user.username))
 		client:setGameName("mrjuicylemon.es/deepBot/")
+		for k, server in pairs(client.servers) do
+			--p(k)
+			if read_file("serverData/"..server.id.."/ServerConfig/Logs.txt") ~= nil then
+				--server:getChannelById(read_file("serverData/"..server.id.."/ServerConfig/Logs.txt")):sendMessage("@here\nI received a new update, Mute, kick and ban commands are fixed now.")
+			end
+		end
 end)
 
 
@@ -69,6 +128,8 @@ client:on("messageCreate", function(message)
 	if message.server == nil then return end
 	local carpeta = "serverData/"..message.server.id.."/"
 	local serverConfig = carpeta.."ServerConfig/"
+	local Teams = carpeta.."Teams/"
+
 	_G.sendAndDelete = function( channel, message, Ttimer )
 	  	Ttimer = Ttimer or 3000
 	  	local Tmessage = channel:sendMessage(message)
@@ -87,22 +148,12 @@ client:on("messageCreate", function(message)
 	    end))
 	end
 
-	function date()
-	  return os.date("[%d.%m.%y][%X]")
-	end
-
 	function HasRole(who)
 		for _, ids in pairs(who.roles) do
 		  if ids.name:find("Guide") then
 		    return true
 		  end
 		end
-	end
-
-	function WriteFile(path, file, text)
-		file = io.open(path.."/"..file..".txt", "w")
-		file:write(text)
-		file:close()
 	end
 
 	local cmd, arg = string.match(message.content, '(%S+) (.*)')
@@ -112,9 +163,27 @@ client:on("messageCreate", function(message)
 		message.author:sendMessage("```Markdown\n#Mod Commands:\n\n .add @someone Role\n .mute @someone Reason  \n .unmute @someone \n .banList \n .prune NumberOfMessages\n .kick @someone Reason\n .ban @someone Reason\n .tempMute @someone TimeInMinutes\n .Welcome WelcomingMessage\n\n```<@"..message.author.id..">\n")
 		message.channel:sendMessage("Check PM.")
 	end
-	local Commander = false
 
 	if message.author == client.user then return end
+
+	if cmd == ".join" then
+		for dUser in io.lines(Teams.."Discorders.txt") do
+		for rUser in io.lines(Teams.."Rioters.txt") do
+			print(rUser.." "..dUser)
+  			if dUser == message.author.id or rUser == message.author.id then
+  				message.channel:sendMessage("```\nYou are already in a team.\n```")
+  				return
+  			end
+  		end
+  		end
+		if arg:find("corders") then
+			AddToFile(Teams, "Discorders", message.author.id)
+			message.channel:sendMessage("```\n"..message.author.username.." has joined Discorders team, Good Luck!\n```")
+		elseif arg:find("oters") then
+			AddToFile(Teams, "Rioters", message.author.id)
+			message.channel:sendMessage("```\n"..message.author.username.." has joined Rioters team, Good Luck!\n```")
+		end
+	end
 
 	if cmd == ".add" then
 		local theRole = string.match(arg, "<@[%d]+> (.*)")
@@ -302,11 +371,11 @@ client:on("messageCreate", function(message)
 	end
 	if cmd == ".mute" then
 		Roles = {}
+		local reason = string.match(arg, "<@[%d]+> (.*)")
 		if reason == nil then 
 			message.channel:sendMessage("Enter a reason, please.")
 			return
 		end
-		local reason = string.match(arg, "<@[%d]+> (.*)")
 		if read_file(serverConfig.."Logs.txt") == nil then
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
 			return
@@ -359,11 +428,11 @@ client:on("messageCreate", function(message)
 	end
 	if cmd == ".kick" then
 		Roles = {}
+		local reason = string.match(arg, "<@[%d]+> (.*)")
 		if reason == nil then 
 			message.channel:sendMessage("Enter a reason, please.")
 			return
 		end
-		local reason = string.match(arg, "<@[%d]+> (.*)")
 		if read_file(serverConfig.."Logs.txt") == nil then
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
 			return
@@ -380,11 +449,11 @@ client:on("messageCreate", function(message)
 		end
 	end
 	if cmd == ".ban" then
+		local reason = string.match(arg, "<@[%d]+> (.*)")
 		if reason == nil then 
 			message.channel:sendMessage("Enter a reason, please.")
 			return
 		end
-		local reason = string.match(arg, "<@[%d]+> (.*)")
 		Roles = {}
 		if read_file(serverConfig.."Logs.txt") == nil then
 			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
@@ -399,6 +468,35 @@ client:on("messageCreate", function(message)
 			end
 		else
 			message.channel:sendMessage("You don't have permissions to run this command.")
+		end
+	end
+	if message.content:find("discord.gg") then
+		stopped = false
+		if read_file(serverConfig.."Logs.txt") == nil then
+			message.channel:sendMessage("Please configure first Logs.txt, run ``.Logs ChannelID`` command.")
+			return
+		end
+		for _, role in pairs(message.author.roles) do
+			if role.name == "Rule Breaker" then
+				message.server:kickUser(message.author)
+				message.channel:sendMessage("Was kicked because he was a Rule Breaker already.")
+				message.server:getChannelById(read_file(serverConfig.."Logs.txt")):createMessage("<@"..message.author.id.."> tried to post a discord link, since he was already a 'Rule Breaker' I kicked him.")
+			end
+		end
+		if stopped == false then
+			Discorded = {}
+			for _, role in pairs(message.server.roles) do
+				for _, rolez in pairs(message.author.roles) do
+					if role.name == "Rule Breaker" then
+						table.insert(Discorded, role)
+					end
+					table.insert(Discorded, rolez)
+				end
+			end
+			message.channel:sendMessage("Please <@"..message.author.id.."> don't send discord links.")
+			message.server:getChannelById(read_file(serverConfig.."Logs.txt")):createMessage("<@"..message.author.id.."> tried to post a discord link, I deleted it.")
+			message:delete()
+			message.author:setRoles(Discorded)
 		end
 	end
 
