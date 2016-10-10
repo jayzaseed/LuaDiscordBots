@@ -10,6 +10,9 @@ require("table2")
 require("lib/utf8")
 require("lib/utf8data")
 local client = discordia.Client:new()
+local InCDWood = {}
+local InCDIron = {}
+local InCDStone = {}
 
 function date()
 	return os.date("[%d.%m.%y][%X]")
@@ -97,6 +100,13 @@ client:on('serverCreate', function(newServer)
 		printLog("Carpeta Teams creada en "..newServer.name, "INFO")
 		fs.mkdirSync(carpeta.."Teams")
 	end
+	if not fs.existsSync(carpeta.."Recollect") then
+		printLog("Carpeta Recollect creada en "..newServer.name, "INFO")
+		fs.mkdirSync(carpeta.."Recollect")
+		fs.mkdirSync(carpeta.."Recollect/Wood")
+		fs.mkdirSync(carpeta.."Recollect/Iron")
+		fs.mkdirSync(carpeta.."Recollect/Stone")
+	end
 	if not fs.existsSync(carpeta.."Teams/Discorders.txt") then
 		local emptyFile = io.open(carpeta.."Teams/Discorders.txt", "w")
 		emptyFile:close()
@@ -129,6 +139,7 @@ client:on("messageCreate", function(message)
 	local carpeta = "serverData/"..message.server.id.."/"
 	local serverConfig = carpeta.."ServerConfig/"
 	local Teams = carpeta.."Teams/"
+	local Recollect = carpeta.."Recollect/"
 
 	_G.sendAndDelete = function( channel, message, Ttimer )
 	  	Ttimer = Ttimer or 3000
@@ -182,6 +193,165 @@ client:on("messageCreate", function(message)
 		elseif arg:find("oters") then
 			AddToFile(Teams, "Rioters", message.author.id)
 			message.channel:sendMessage("```\n"..message.author.username.." has joined Rioters team, Good Luck!\n```")
+		end
+	end
+
+	if cmd == ".resource" then
+		if arg == nil then
+			message.channel:sendMessage("```\nProper usage of this command:\n.resource Wood / .resource Iron / .resource Stone\n```")
+			return
+		end
+		if arg:lower() == "wood" then
+			local WoodCount = read_file(Recollect.."Wood/"..message.author.id..".txt")
+			message.channel:sendMessage("You have "..WoodCount.." pieces of wood.")
+		elseif arg:lower() == "iron" then
+			local IronCount = read_file(Recollect.."Iron/"..message.author.id..".txt")
+			message.channel:sendMessage("You have "..IronCount.." iron ores.")
+		elseif arg:lower() == "stone" then
+			local StoneCount = read_file(Recollect.."Stone/"..message.author.id..".txt")
+			message.channel:sendMessage("You have "..StoneCount.." stone ores.")
+		end
+	end
+
+	if cmd == ".recruit" then
+		local team
+		local sinequipo = false
+		for dUser in io.lines(Teams.."Discorders.txt") do
+			if dUser == message.author.id then
+				team = "Discorders"
+				sinequipo = true
+				break
+			end
+		end
+		for rUser in io.lines(Teams.."Rioters.txt") do
+			if rUser == message.author.id then
+				team = "Rioters"
+				sinequipo = true
+				break
+			end
+		end
+		if sinequipo == false then
+			message.channel:sendMessage("```\nPlease join a team before\n.join Discorders / Rioters\n```")
+			return
+		end
+		local WoodCount = tonumber(read_file(Recollect.."Wood/"..message.author.id..".txt"))
+		print(WoodCount)
+		local IronCount = tonumber(read_file(Recollect.."Iron/"..message.author.id..".txt"))
+		print(IronCount)
+		local StoneCount = tonumber(read_file(Recollect.."Stone/"..message.author.id..".txt"))
+		print(StoneCount)
+		if arg == nil then
+			message.channel:sendMessage("```Markdown\nProper usage of this command:\n.recruit Troop\n\nAvailable troops:\n<For Discorders>\n·White Wizard\n·Giant\n\n<For Rioters>\n·Black Wizard\n·Vampire\n·Succubus```")
+			return
+		end
+		if team == "Discorders" then
+			if arg:lower():find("hite") then
+				if WoodCount <= 55 and IronCount <= 40 and StoneCount <= 25 then
+					message.channel:sendMessage("You dont have enough materials. \nWood required: 55, Iron required: 40, Stone required: 25\nyou have "..WoodCount.." of Wood, "..IronCount.." of Iron and "..StoneCount.." of Stone")
+					return
+				end
+				WriteFile(Recollect.."Wood", message.author.id, WoodCount-55)
+				WriteFile(Recollect.."Iron", message.author.id, IronCount-40)
+				WriteFile(Recollect.."Stone", message.author.id, StoneCount-25)
+			end
+		elseif team == "Rioters" then
+			if arg:lower():find("ack") then
+				if WoodCount <= 55 and IronCount <= 40 and StoneCount <= 25 then
+					message.channel:sendMessage("You dont have enough materials. \nWood required: 55, Iron required: 40, Stone required: 25\nyou have "..WoodCount.." of Wood, "..IronCount.." of Iron and "..StoneCount.." of Stone")
+					return
+				end
+				WriteFile(Recollect.."Wood", message.author.id, WoodCount-55)
+				WriteFile(Recollect.."Iron", message.author.id, IronCount-40)
+				WriteFile(Recollect.."Stone", message.author.id, StoneCount-25)
+			end
+		end
+	end
+
+	if cmd == ".recollect" then
+		local team
+		for dUser in io.lines(Teams.."Discorders.txt") do
+			if dUser == message.author.id then
+				team = "Discorders"
+			end
+		end
+		for rUser in io.lines(Teams.."Rioters.txt") do
+			if rUser == message.author.id then
+				team = "Rioters"
+			end
+		end
+		if team == nil then
+			message.channel:sendMessage("```\nPlease join a team before\n.join Discorders / Rioters\n```")
+			return
+		end
+		if arg == nil then
+			message.channel:sendMessage("```\nYou must choose Wood, Iron or Stone.")
+			return
+		elseif arg:lower() == "wood" then
+			for l, found in pairs(InCDWood) do
+				if found == message.author.id then
+					message.channel:sendMessage("```\nTry again later\n```")
+					return
+				end
+			end
+			madera = math.random(3, 12)
+			message.channel:sendMessage("<@"..message.author.id.."> recollected "..madera.." pieces of wood.		Team: "..team)
+			local ActWood = read_file(Recollect.."Wood/"..message.author.id..".txt")
+			table.insert(InCDWood, 1, message.author.id)
+			timer.sleep(30000)
+			InCDWood[message.author.id] = nil
+			if ActWood ~= nil then
+				ActWood = tonumber(ActWood)
+				WriteFile(Recollect.."Wood", message.author.id, ActWood+madera)
+			else
+				io.open(Recollect.."Wood/"..message.author.id..".txt", "w")
+				maderaFile = io.open(Recollect.."Wood/"..message.author.id..".txt", "w")
+				maderaFile:write(madera)
+				maderaFile:close()
+			end
+		elseif arg:lower() == "iron" then
+			for l, found in pairs(InCDIron) do
+				if found == message.author.id then
+					message.channel:sendMessage("```\nTry again later\n```")
+					return
+				end
+			end
+			Iron = math.random(1, 7)
+			message.channel:sendMessage("<@"..message.author.id.."> recollected "..Iron.." iron ores.		Team: "..team)
+			local ActIron = read_file(Recollect.."Iron/"..message.author.id..".txt")
+			table.insert(InCDIron, 1, message.author.id)
+			timer.sleep(30000)
+			InCDIron[message.author.id] = nil
+			if ActIron ~= nil then
+				ActIron = tonumber(ActIron)
+				WriteFile(Recollect.."Iron", message.author.id, ActIron+Iron)
+			else
+				io.open(Recollect.."Iron/"..message.author.id..".txt", "w")
+				IronFile = io.open(Recollect.."Iron/"..message.author.id..".txt", "w") 
+				IronFile:write(Iron)
+				IronFile:close()
+			end
+		elseif arg:lower() == "stone" then
+			for l, found in pairs(InCDStone) do
+				if found == message.author.id then
+					message.channel:sendMessage("```\nTry again later\n```")
+					return
+				end
+			end
+			Stone = math.random(1, 7)
+			message.channel:sendMessage("<@"..message.author.id.."> recollected "..Stone.." stones.		Team: "..team)
+			local ActStone = read_file(Recollect.."Stone/"..message.author.id..".txt")
+			table.insert(InCDStone, 1, message.author.id)
+			timer.sleep(30000)
+			InCDStone[message.author.id] = nil
+			if ActStone ~= nil then
+				ActStone = tonumber(ActStone)
+				WriteFile(Recollect.."Stone", message.author.id, ActStone+Stone)
+			else
+				io.open(Recollect.."Stone/"..message.author.id..".txt", "w")
+				StoneFile = io.open(Recollect.."Stone/"..message.author.id..".txt", "w")
+				StoneFile:write(Stone)
+				StoneFile:close()
+			end
 		end
 	end
 
@@ -484,19 +654,9 @@ client:on("messageCreate", function(message)
 			end
 		end
 		if stopped == false then
-			Discorded = {}
-			for _, role in pairs(message.server.roles) do
-				for _, rolez in pairs(message.author.roles) do
-					if role.name == "Rule Breaker" then
-						table.insert(Discorded, role)
-					end
-					table.insert(Discorded, rolez)
-				end
-			end
 			message.channel:sendMessage("Please <@"..message.author.id.."> don't send discord links.")
-			message.server:getChannelById(read_file(serverConfig.."Logs.txt")):createMessage("<@"..message.author.id.."> tried to post a discord link, I deleted it.")
 			message:delete()
-			message.author:setRoles(Discorded)
+			message.server:getChannelById(read_file(serverConfig.."Logs.txt")):createMessage("<@"..message.author.id.."> tried to post a discord link, I deleted it.")
 		end
 	end
 
