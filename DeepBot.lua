@@ -297,8 +297,6 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("<@"..message.author.id.."> recollected "..madera.." pieces of wood.		Team: "..team)
 			local ActWood = read_file(Recollect.."Wood/"..message.author.id..".txt")
 			table.insert(InCDWood, 1, message.author.id)
-			timer.sleep(30000)
-			InCDWood[message.author.id] = nil
 			if ActWood ~= nil then
 				ActWood = tonumber(ActWood)
 				WriteFile(Recollect.."Wood", message.author.id, ActWood+madera)
@@ -308,6 +306,8 @@ client:on("messageCreate", function(message)
 				maderaFile:write(madera)
 				maderaFile:close()
 			end
+			timer.sleep(30000)
+			InCDWood[message.author.id] = nil
 		elseif arg:lower() == "iron" then
 			for l, found in pairs(InCDIron) do
 				if found == message.author.id then
@@ -319,8 +319,6 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("<@"..message.author.id.."> recollected "..Iron.." iron ores.		Team: "..team)
 			local ActIron = read_file(Recollect.."Iron/"..message.author.id..".txt")
 			table.insert(InCDIron, 1, message.author.id)
-			timer.sleep(30000)
-			InCDIron[message.author.id] = nil
 			if ActIron ~= nil then
 				ActIron = tonumber(ActIron)
 				WriteFile(Recollect.."Iron", message.author.id, ActIron+Iron)
@@ -330,6 +328,8 @@ client:on("messageCreate", function(message)
 				IronFile:write(Iron)
 				IronFile:close()
 			end
+			timer.sleep(30000)
+			InCDIron[message.author.id] = nil
 		elseif arg:lower() == "stone" then
 			for l, found in pairs(InCDStone) do
 				if found == message.author.id then
@@ -341,8 +341,6 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("<@"..message.author.id.."> recollected "..Stone.." stones.		Team: "..team)
 			local ActStone = read_file(Recollect.."Stone/"..message.author.id..".txt")
 			table.insert(InCDStone, 1, message.author.id)
-			timer.sleep(30000)
-			InCDStone[message.author.id] = nil
 			if ActStone ~= nil then
 				ActStone = tonumber(ActStone)
 				WriteFile(Recollect.."Stone", message.author.id, ActStone+Stone)
@@ -352,6 +350,8 @@ client:on("messageCreate", function(message)
 				StoneFile:write(Stone)
 				StoneFile:close()
 			end
+			timer.sleep(30000)
+			InCDStone[message.author.id] = nil
 		end
 	end
 
