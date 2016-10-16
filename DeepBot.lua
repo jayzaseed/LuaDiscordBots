@@ -72,6 +72,7 @@ end)
 
 client:on('serverCreate', function(newServer)
 	if not newServer then return end
+	--newServer.owner:sendMessage("Hey owner of "..newServer.name..", I have a new function! As you know I delete discord.gg messages, well if you want me to ignore someone you can configure me!\nBy doing ``\n.WhiteList @someone\n`` I will add him/her to my White List and I won't remove his discord.gg messages! :)")
 	local carpeta = "serverData/"..newServer.id.."/"
 	local serverConfig = carpeta.."ServerConfig/"
 
@@ -150,6 +151,7 @@ client:on(
 		p(string.format('Logged in as %s', client.user.username))
 		client:setGameName("mrjuicylemon.es/deepBot/")
 		for k, server in pairs(client.servers) do
+			--p(k)
 			if read_file("serverData/"..server.id.."/ServerConfig/Logs.txt") ~= "" then
 				--server:getChannelById(read_file("serverData/"..server.id.."/ServerConfig/Logs.txt")):sendMessage("@here\nI received a new update, Mute, kick and ban commands are fixed now.")
 			end
@@ -183,8 +185,9 @@ client:on("messageCreate", function(message)
 	end
 
 	function HasRole(who)
+		if message.author == message.server.owner then return true end
 		for _, ids in pairs(who.roles) do
-		  if ids.name:find("Guide") then
+		  if ids.name:find("Guide")then
 		    return true
 		  end
 		end
