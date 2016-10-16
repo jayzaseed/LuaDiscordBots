@@ -759,7 +759,7 @@ client:on("messageCreate", function(message)
 				if read_file("serverData/"..server.id.."/ServerConfig/Logs.txt") ~= "" then
 					client:getServerById(server.id):getChannelById(read_file("serverData/"..server.id.."/ServerConfig/Logs.txt")):sendMessage("@here\nI received a new update:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
 				else
-					client:getServerById(server.id):getChannelById(message.server.defaultChannel.id):sendMessage("@here\nI received a new update:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
+					client:getServerById(server.id):getChannelById(server.defaultChannel.id):sendMessage("@here\nI received a new update:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
 				end
 			end
 		end
