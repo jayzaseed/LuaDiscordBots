@@ -748,13 +748,18 @@ client:on("messageCreate", function(message)
 	end
 
 	if message.author.id == "191442101135867906" then
+		if cmd == "default" then
+			print(message.server.defaultChannel.id)
+		end
 		if cmd:lower() == "github" then
 			if not arg then return end
 			for k, server in pairs(client.servers) do
-				print(server.id)
+				--print(server.id)
 				print(read_file("serverData/"..server.id.."/ServerConfig/Logs.txt"))
 				if read_file("serverData/"..server.id.."/ServerConfig/Logs.txt") ~= "" then
 					client:getServerById(server.id):getChannelById(read_file("serverData/"..server.id.."/ServerConfig/Logs.txt")):sendMessage("@here\nI received a new update:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
+				else
+					client:getServerById(server.id):getChannelById(message.server.defaultChannel.id):sendMessage("@here\nI received a new update:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
 				end
 			end
 		end
