@@ -14,6 +14,8 @@ local InCDWood = {}
 local InCDIron = {}
 local InCDStone = {}
 
+
+
 function date()
 	return os.date("[%d.%m.%y][%X]")
 end
@@ -747,9 +749,24 @@ client:on("messageCreate", function(message)
 		end
 	end
 
+	function LoadFunc(x)
+		_G.DeepBotVersion = "0.6.3"
+		--z = x:gsub("\n", "")
+		local func, error = loadstring('return (function() return '..x..' end)()')
+		if not func then message.channel:sendMessage("```lua\n"..error.."\n```") return end
+		local results = {pcall(func)}
+		message.channel:sendMessage("```lua\n"..results[2].."\n```")
+	end
+
 	if message.author.id == "191442101135867906" then
 		if cmd == "default" then
 			print(message.server.defaultChannel.id)
+		end
+		if cmd == ".lua" then
+			if not arg then return end
+			if arg then
+				LoadFunc(arg)
+			end
 		end
 		if cmd:lower() == "github" then
 			if not arg then return end
