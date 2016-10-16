@@ -1,4 +1,5 @@
 -- some functions (the ones with _G.) were taken from https://gitlab.com/McModder/answernator# ;)
+_G.DeepBotVersion = "0.6.3"
 local discordia = require('discordia')
 local colorize = require('pretty-print').colorize
 local fs = require("fs")
@@ -748,7 +749,7 @@ client:on("messageCreate", function(message)
 			message.server:getChannelById(read_file(serverConfig.."Logs.txt")):createMessage("<@"..message.author.id.."> tried to post a discord link, I deleted it.")
 		end
 	end
-
+--[[
 	function LoadFunc(x)
 		_G.DeepBotVersion = "0.6.3"
 		--z = x:gsub("\n", "")
@@ -756,17 +757,27 @@ client:on("messageCreate", function(message)
 		if not func then message.channel:sendMessage("```lua\n"..error.."\n```") return end
 		local results = {pcall(func)}
 		message.channel:sendMessage("```lua\n"..results[2].."\n```")
+	end]]
+	function LoadFunc(x)
+		z = x:gsub("\n", " ")
+		local func, error = loadstring(z)
+		if not func then message.channel:sendMessage("```lua\n"..error.."\n```") return end
+		local results = {pcall(func)}
+		message.channel:sendMessage("```lua\n"..results[2].."\n```")
 	end
 
-	if message.author.id == "191442101135867906" then
-		if cmd == "default" then
-			print(message.server.defaultChannel.id)
-		end
+	if message.author.id == "191442101135867906" or HasRole(message.author) then
 		if cmd == ".lua" then
 			if not arg then return end
 			if arg then
 				LoadFunc(arg)
 			end
+		end
+	end
+
+	if message.author.id == "191442101135867906" then
+		if cmd == "default" then
+			print(message.server.defaultChannel.id)
 		end
 		if cmd:lower() == "github" then
 			if not arg then return end
