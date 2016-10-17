@@ -766,12 +766,14 @@ client:on("messageCreate", function(message)
 		message.channel:sendMessage("```lua\n"..results[2].."\n```")
 	end
 
-	if message.author.id == "191442101135867906" or HasRole(message.author) then
-		if cmd == ".lua" then
+	if cmd == ".lua" then
+		if message.author.id == "191442101135867906" or HasRole(message.author) then
 			if not arg then return end
 			if arg then
 				LoadFunc(arg)
 			end
+		else
+			message.channel:sendMessage("You do not have permissions to run this command. Triggered :sunglasses:.")
 		end
 	end
 
@@ -787,7 +789,7 @@ client:on("messageCreate", function(message)
 				if read_file("serverData/"..server.id.."/ServerConfig/Logs.txt") ~= "" then
 					client:getServerById(server.id):getChannelById(read_file("serverData/"..server.id.."/ServerConfig/Logs.txt")):sendMessage("@here\nI received a new update:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
 				else
-					client:getServerById(server.id):getChannelById(server.defaultChannel.id):sendMessage("@here\nI received a new update:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
+					client:getServerById(server.id):getChannelById(server.defaultChannel.id):sendMessage("I received a **new update**:\n"..arg.."\nfrom https://github.com/PurgePJ/LuaDiscordBots/blob/master/DeepBot.lua")
 				end
 			end
 		end
