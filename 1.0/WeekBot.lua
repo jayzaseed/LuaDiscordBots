@@ -1,4 +1,4 @@
-local discordia= require('discordia')
+local discordia = require('discordia')
 local timer = require("timer")
 local base64 = require('base64')
 local Http = require('coro-http')
