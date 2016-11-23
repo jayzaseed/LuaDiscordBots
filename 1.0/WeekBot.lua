@@ -70,6 +70,7 @@ client:on("messageCreate", function(message)
 	if message.content == "!fact" then
 		local number, fact = RandomFact(facts)
 		
+		-- I'm using a modified sendMessage
 		message.channel:sendMessage(" ", {
 			["color"] = color,
 			["fields"] = {
