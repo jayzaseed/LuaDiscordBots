@@ -45,6 +45,15 @@ function WriteFile(path, file, text)
 	file:close()
 end
 
+function IntervalCheck(Dia)
+	timer.setInterval(2500, function()
+		if Dia ~= os.date("%a") then
+			print("Woops, new day!!!!")
+			client:stop()
+		end
+	end)
+end
+
 
 client:on("ready", function()
 	date:Init() -- Start the module of today's day
@@ -53,6 +62,7 @@ client:on("ready", function()
 	else
 		print("Bot was not updated as it was already.")
 	end
+	IntervalCheck(os.date("%a"))
 end)
 
 client:on("messageCreate", function(message)
@@ -60,7 +70,6 @@ client:on("messageCreate", function(message)
 	if message.content == "!fact" then
 		local number, fact = RandomFact(facts)
 		
-    -- I'm using a modified sendMessage .
 		message.channel:sendMessage(" ", {
 			["color"] = color,
 			["fields"] = {
