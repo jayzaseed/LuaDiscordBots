@@ -1,8 +1,8 @@
-local discordia = require('discordia')
-local timer = require("timer")
-local base64 = require('base64')
-local Http = require('coro-http')
-local client = discordia.Client()
+_G.discordia = require('discordia')
+_G.timer = require("timer")
+_G.base64 = require('base64')
+_G.Http = require('coro-http')
+_G.client = discordia.Client()
 
 date = require("WeekBotModules/"..os.date("%a"))
 
@@ -14,7 +14,7 @@ function UpdateBot(avatar, status)
 			client:setGameName(status)
 		end)
 		if success then
-			WriteFile("WeekBotModules","WeekBotAvatar", client.user.avatar)
+			WriteFile("WeekBotModules","WeekBotAvatar", date.avatar)
 			print("Successfully changed the avatar.")
 			print("Successfully changed the status.")
 		else
@@ -45,9 +45,9 @@ function WriteFile(path, file, text)
 	file:close()
 end
 
-function IntervalCheck(Dia)
-	timer.setInterval(2500, function()
-		if Dia ~= os.date("%a") then
+function IntervalCheck(day)
+	timer.setInterval(60000, function()
+		if day ~= os.date("%a") then
 			print("Woops, new day!!!!")
 			client:stop()
 		end
@@ -57,8 +57,8 @@ end
 
 client:on("ready", function()
 	date:Init() -- Start the module of today's day
-	if read_file("WeekBotModules/WeekBotAvatar.txt") ~= client.user.avatar then
-		UpdateBot(avatar, status)
+	if read_file("WeekBotModules/WeekBotAvatar.txt") ~= date.avatar then
+		UpdateBot(date.avatar, date.status)
 	else
 		print("Bot was not updated as it was already.")
 	end
@@ -68,11 +68,11 @@ end)
 client:on("messageCreate", function(message)
 	if not message or message.author == client.user then return end
 	if message.content == "!fact" then
-		local number, fact = RandomFact(facts)
+		local number, fact = RandomFact(date.facts)
 		
 		-- I'm using a modified sendMessage
 		message.channel:sendMessage(" ", {
-			["color"] = color,
+			["color"] = date.color,
 			["fields"] = {
 				{name = "Fact #"..number, value = fact, inline = false},
 			},
