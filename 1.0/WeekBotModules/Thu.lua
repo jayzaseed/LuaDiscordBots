@@ -1,9 +1,9 @@
 local date = {}
 
 function date:Init()
-	_G.avatar = "https://2.bp.blogspot.com/-3SRKrxnavTU/V4JOjvziZHI/AAAAAAACQ7s/AVXLMSGE_xwKyyFzqkvWhDYSjjmdMeK2QCLcB/s1600/Happy%2BThursday%2B46.png"
-	_G.status = "Almost Friday :)"
-	_G.facts = {
+	date.avatar = "https://2.bp.blogspot.com/-3SRKrxnavTU/V4JOjvziZHI/AAAAAAACQ7s/AVXLMSGE_xwKyyFzqkvWhDYSjjmdMeK2QCLcB/s1600/Happy%2BThursday%2B46.png"
+	date.status = "Almost Friday :)"
+	date.facts = {
 		[1] = "In countries that use the Sunday-first convention, Thursday is defined as the fifth day of the week.",
 		[2] = "The name is derived from Old English Þūnresdæg and Middle English Thuresday meaning “Thor’s Day.”",
 		[3] = "The astrological and astronomical sign of the planet Jupiter  is sometimes used to represent Thursday.",
@@ -13,7 +13,7 @@ function date:Init()
 		[7] = "In the USSR of the 1970s and 1980s Thursday was the “Fish Day”, when the nation’s foodservice establishments were supposed to serve fish (rather than meat) dishes.", 
 		[8] = "In some high schools in the United States during the 1950s and the 1960s, it was believed that if someone wore green on Thursdays, it meant that he or she was gay.",
 	}
-	_G.color = 9043791
+	date.color = 9043791
 end
 
 return date
