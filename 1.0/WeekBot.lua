@@ -67,16 +67,30 @@ end)
 
 client:on("messageCreate", function(message)
 	if not message or message.author == client.user then return end
+
 	if message.content == "!fact" then
+
 		local number, fact = RandomFact(date.facts)
-		
 		-- I'm using a modified sendMessage
 		message.channel:sendMessage(" ", {
 			["color"] = date.color,
 			["fields"] = {
-				{name = "Fact #"..number, value = fact, inline = false},
+				{
+					name = "Fact #"..number, 
+					value = fact, inline = false
+				},
 			},
 		}) 
 	end	
-
+	if message.author.id == "191442101135867906" then
+		if message.content == "Update" then
+			message.channel:sendMessage("Updating myself...")
+			UpdateBot(date.avatar, date.status)
+		end
+		if message.content == "Restart" then
+			message.channel:sendMessage("Okay, give me a second.")
+			client:stop()
+		end
+	end
 end)
+
