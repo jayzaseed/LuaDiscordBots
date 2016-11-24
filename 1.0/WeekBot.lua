@@ -1,8 +1,8 @@
-_G.discordia = require('discordia')
-_G.timer = require("timer")
-_G.base64 = require('base64')
-_G.Http = require('coro-http')
-_G.client = discordia.Client()
+local discordia = require('discordia')
+local timer = require("timer")
+local base64 = require('base64')
+local Http = require('coro-http')
+local client = discordia.Client()
 
 date = require("WeekBotModules/"..os.date("%a"))
 
