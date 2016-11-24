@@ -77,7 +77,8 @@ client:on("messageCreate", function(message)
 			["fields"] = {
 				{
 					name = "Fact #"..number, 
-					value = fact, inline = false
+					value = fact, 
+					inline = false
 				},
 			},
 		}) 
@@ -93,4 +94,5 @@ client:on("messageCreate", function(message)
 		end
 	end
 end)
+
 
