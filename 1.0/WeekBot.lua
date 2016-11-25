@@ -78,11 +78,7 @@ client:on("messageCreate", function(message)
 	end
 
 	if cmd == "!help" then
-		if help[arg] ~= nil then
-			message.channel:sendMessage(" ", help[arg])
-		else
-			message.channel:sendMessage(" ", help["empty"])
-		end
+		message.channel:sendMessage(" ", help[arg] or help["empty"])
 	end
 
 	if message.author.id == "191442101135867906" then
