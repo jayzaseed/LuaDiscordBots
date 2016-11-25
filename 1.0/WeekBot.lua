@@ -6,7 +6,9 @@ local base64 = require('base64')
 local Http = require('coro-http')
 local client = discordia.Client()
 
-date = require("WeekBotModules/"..os.date("%a"))
+local WhichDay = os.date("%a")
+date = require("WeekBotModules/Week")
+
 
 local function RandomFact(table)
 	assert(type(table) == "table", "RandomFact: table expected.")
@@ -30,15 +32,6 @@ function WriteFile(path, file, text)
 	file:close()
 end
 
-local function IntervalCheck(day)
-	timer.setInterval(60000, function()
-		if day ~= os.date("%a") then
-			print("Woops, new day!!!!")
-			client:stop()
-		end
-	end)
-end
-
 local function UpdateBot(avatar, status)
 	coroutine.wrap(function()
 		local success, result = pcall(function()
@@ -47,7 +40,7 @@ local function UpdateBot(avatar, status)
 			client:setGameName(status)
 		end)
 		if success then
-			WriteFile("WeekBotModules","WeekBotAvatar", date.avatar)
+			WriteFile("WeekBotModules","WeekBotAvatar", date[WhichDay].avatar)
 			print("Successfully changed the avatar.")
 			print("Successfully changed the status.")
 		else
@@ -58,13 +51,11 @@ end
 
 
 client:on("ready", function()
-	date:Init() -- Start the module of today's day
-	if read_file("WeekBotModules/WeekBotAvatar.txt") ~= date.avatar then
-		UpdateBot(date.avatar, date.status)
+	if read_file("WeekBotModules/WeekBotAvatar.txt") ~= date[WhichDay].avatar then
+		UpdateBot(date[WhichDay].avatar, date[WhichDay].status)
 	else
 		print("Bot was not updated as it was already.")
 	end
-	IntervalCheck(os.date("%a"))
 end)
 
 client:on("messageCreate", function(message)
@@ -75,10 +66,10 @@ client:on("messageCreate", function(message)
 
 	if message.content == "!fact" then
 
-		local number, fact = RandomFact(date.facts)
+		local number, fact = RandomFact(date[WhichDay].facts)
 		-- I'm using a modified sendMessage
 		message.channel:sendMessage(" ", {
-			["color"] = date.color,
+			["color"] = date[WhichDay].color,
 			["fields"] = {
 				{
 					name = "Fact #"..number, 
@@ -92,7 +83,7 @@ client:on("messageCreate", function(message)
 	if cmd == "!help" then
 		if arg == nil then
 			message.channel:sendMessage(" ",{
-				["color"] = date.color,
+				["color"] = date[WhichDay].color,
 				["fields"] = {
 					{
 						name = "What do you need help in?", 
@@ -103,7 +94,7 @@ client:on("messageCreate", function(message)
 			})
 		elseif arg == "!fact" then
 			message.channel:sendMessage(" ",{
-				["color"] = date.color,
+				["color"] = date[WhichDay].color,
 				["fields"] = {
 					{
 						name = arg, 
@@ -114,7 +105,7 @@ client:on("messageCreate", function(message)
 			})
 		elseif arg == "!help" then
 			message.channel:sendMessage(" ",{
-				["color"] = date.color,
+				["color"] = date[WhichDay].color,
 				["fields"] = {
 					{
 						name = arg, 
@@ -129,7 +120,7 @@ client:on("messageCreate", function(message)
 	if message.author.id == "191442101135867906" then
 		if func.l(message.content) == "update" then
 			message.channel:sendMessage("Updating myself...")
-			UpdateBot(date.avatar, date.status)
+			UpdateBot(date[WhichDay].avatar, date[WhichDay].status)
 		end
 		if message.content == "Restart" then
 			message.channel:sendMessage("Okay, give me a second.")
@@ -138,3 +129,5 @@ client:on("messageCreate", function(message)
 	end
 end)
 
+
+client:run(read_file("WeekBotModules/token.txt"))
