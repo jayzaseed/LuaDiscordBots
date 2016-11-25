@@ -71,4 +71,18 @@ return {
 		},
 		color = 16019010,
 	},
+	["Sat"] = {
+		avatar = "https://s-media-cache-ak0.pinimg.com/originals/22/d6/ce/22d6ce39d32a6513c3a4afbfc8a86b0d.png",
+		status = "Sweet Saturday <3",
+		facts = {
+			[1] = "https://shechive.files.wordpress.com/2015/09/670016-7.jpg?quality=100&strip=info&w=600",
+			[2] = "https://shechive.files.wordpress.com/2015/09/670016-8.jpg?quality=100&strip=info&w=600",
+			[4] = "https://shechive.files.wordpress.com/2015/09/670016-12.jpg?quality=100&strip=info&w=600",
+			[5] = "https://shechive.files.wordpress.com/2015/09/670016-3.gif?w=500",
+			[6] = "Saturday is the most awaited day in a week by everyone as we all temporarily disembark from our five day long official journey, only to continue after a couple of days on Monday, which could be possibly the most dreaded day of the week, for similar reasons.",
+			[7] = "Traditionally, in olden days it was believed that Saturdays are the appropriated days to hunt down Vampires as they are restricted only to their coffins and are not allowed to get out on that day. In the Balkans tradition, those who are born on Saturdays are entitled to become vampire hunters as they can see vampires but not by others.", 
+			[8] = "The calendar that we follow considers Saturday as the sixth day of the week and is the idea of the international standard ISO 8601 that was created to represent date and time in a seamless way, so that they are not confused as they differ to a great degree across various geographical locations of the world.\nBut the Abrahamic religions including Christianity, Islam and Judaism consider Saturday as the seventh day of the week.",
+		},
+		color = 14940445,
+	},
 }
