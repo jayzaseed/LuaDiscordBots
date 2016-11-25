@@ -6,9 +6,6 @@ local base64 = require('base64')
 local Http = require('coro-http')
 local client = discordia.Client()
 
-local WhichDay = os.date("%a")
-date = require("WeekBotModules/Week")
-
 
 local function RandomFact(table)
 	assert(type(table) == "table", "RandomFact: table expected.")
@@ -81,39 +78,10 @@ client:on("messageCreate", function(message)
 	end
 
 	if cmd == "!help" then
-		if arg == nil then
-			message.channel:sendMessage(" ",{
-				["color"] = date[WhichDay].color,
-				["fields"] = {
-					{
-						name = "What do you need help in?", 
-						value = "!help !fact ??",
-						inline = false
-					},
-				},
-			})
-		elseif arg == "!fact" then
-			message.channel:sendMessage(" ",{
-				["color"] = date[WhichDay].color,
-				["fields"] = {
-					{
-						name = arg, 
-						value =  help[arg],
-						inline = false
-					},
-				},
-			})
-		elseif arg == "!help" then
-			message.channel:sendMessage(" ",{
-				["color"] = date[WhichDay].color,
-				["fields"] = {
-					{
-						name = arg, 
-						value =  help[arg],
-						inline = false
-					},
-				},
-			})
+		if help[arg] ~= nil then
+			message.channel:sendMessage(" ", help[arg])
+		else
+			message.channel:sendMessage(" ", help["empty"])
 		end
 	end
 
