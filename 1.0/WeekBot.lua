@@ -6,7 +6,7 @@ local client = discordia.Client()
 
 date = require("WeekBotModules/"..os.date("%a"))
 
-function UpdateBot(avatar, status)
+local function UpdateBot(avatar, status)
 	coroutine.wrap(function()
 		local success, result = pcall(function()
 			local _, av = Http.request("GET", avatar)
@@ -23,7 +23,7 @@ function UpdateBot(avatar, status)
 	end)()
 end
 
-function RandomFact(table)
+local function RandomFact(table)
 	assert(type(table) == "table", "RandomFact: table expected.")
 	if table then
 		local randomed = math.random(1, #table)
@@ -31,7 +31,7 @@ function RandomFact(table)
 	end
 end
 
-function read_file(path)
+local function read_file(path)
 	local file = io.open(path, "rb")
 	if not file then return nil end
 	local content = file:read "*a"
@@ -39,13 +39,13 @@ function read_file(path)
 	return content
 end
 
-function WriteFile(path, file, text)
+local function WriteFile(path, file, text)
 	local file = io.open(path.."/"..file..".txt", "w")
 	file:write(text)
 	file:close()
 end
 
-function IntervalCheck(day)
+local function IntervalCheck(day)
 	timer.setInterval(60000, function()
 		if day ~= os.date("%a") then
 			print("Woops, new day!!!!")
@@ -94,5 +94,4 @@ client:on("messageCreate", function(message)
 		end
 	end
 end)
-
 
