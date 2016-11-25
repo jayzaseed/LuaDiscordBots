@@ -90,7 +90,7 @@ client:on("messageCreate", function(message)
 			message.channel:sendMessage("Updating myself...")
 			UpdateBot(date[WhichDay].avatar, date[WhichDay].status)
 		end
-		if message.content == "Restart" then
+		if func.l(message.content) == "restart" then
 			message.channel:sendMessage("Okay, give me a second.")
 			client:stop()
 		end
