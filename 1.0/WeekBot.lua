@@ -48,6 +48,9 @@ end
 
 
 client:on("ready", function()
+	for guild in client.guilds do
+		p(func.ts(guild))
+	end
 	if read_file("WeekBotModules/WeekBotAvatar.txt") ~= date[WhichDay].avatar then
 		UpdateBot(date[WhichDay].avatar, date[WhichDay].status)
 	else
