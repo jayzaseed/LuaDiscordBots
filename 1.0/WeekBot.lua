@@ -72,7 +72,7 @@ client:on("messageCreate", function(message)
 	end
 
 	if cmd == "!restart" then
-		help[cmd](message, client)
+		command[cmd](message, client)
 	end
 	if cmd == "!update" then
 		func.Requesting(message, "Updating myself...")
