@@ -1,11 +1,10 @@
-local discordia = require('discordia')
+discordia = require('discordia')
+client = discordia.Client()
 local timer = require("timer")
-local func = require("funciones")
 local help = require("help")
-local base64 = require('base64')
-local Http = require('coro-http')
-local client = discordia.Client()
-
+base64 = require('base64')
+Http = require('coro-http')
+command = require("commands")
 
 local function RandomFact(table)
 	assert(type(table) == "table", "RandomFact: table expected.")
@@ -46,7 +45,6 @@ local function UpdateBot(avatar, status)
 	end)()
 end
 
-
 client:on("ready", function()
 	for guild in client.guilds do
 		p(func.ts(guild))
@@ -64,35 +62,22 @@ client:on("messageCreate", function(message)
 	local cmd, arg = string.match(message.content, '(%S+) (.*)')
 	cmd = cmd or message.content
 
-	if message.content == "!fact" then
-
+	if cmd == "!fact" then
 		local number, fact = RandomFact(date[WhichDay].facts)
-		-- I'm using a modified sendMessage
-		message.channel:sendMessage(" ", {
-			["color"] = date[WhichDay].color,
-			["fields"] = {
-				{
-					name = "Fact #"..number, 
-					value = fact, 
-					inline = false
-				},
-			},
-		}) 
+		command[cmd](message, number, fact)
 	end
 
 	if cmd == "!help" then
 		message.channel:sendMessage(" ", help[arg] or help["empty"])
 	end
 
-	if message.author.id == "191442101135867906" then
-		if func.l(message.content) == "update" then
-			message.channel:sendMessage("Updating myself...")
-			UpdateBot(date[WhichDay].avatar, date[WhichDay].status)
-		end
-		if func.l(message.content) == "restart" then
-			message.channel:sendMessage("Okay, give me a second.")
-			client:stop()
-		end
+	if cmd == "!restart" then
+		help[cmd](message, client)
+	end
+	if cmd == "!update" then
+		func.Requesting(message, "Updating myself...")
+		UpdateBot(date[WhichDay].avatar, date[WhichDay].status)
+		func.Success(message, "Updated. It took **"..math.random(10, 70).."** ms to change my avatar and Game Name.")
 	end
 end)
 
