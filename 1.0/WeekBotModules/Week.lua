@@ -85,4 +85,19 @@ return {
 		},
 		color = 14940445,
 	},
+	["Sun"] = {
+		avatar = "http://hairhub.com.au/wp-content/uploads/2016/01/sunday.jpg",
+		status = "Chillin' Sunday",
+		facts = {
+			[1] = "When the Titanic departed from port it carried 1000 loaves of bread, 86,000 pounds of meat, 40,000 eggs and 36,000 apples to feed the passengers and crew on the 7 day voyage.",
+			[2] = "For a butterfly to fly it must have a body temperature of no less than 86 degrees fahrenheit or 30 degrees celsius.",
+			[4] = "The largest milk producing country by volume in the whole world is India.",
+			[5] = "The average human with a full head of hair contains between 85,000 to 150,000 hairs.",
+			[6] = "Jupiter is the largest planet in the Earth’s solar system.",
+			[7] = "Only humans cry because of feelings.", 
+			[8] = "Mohammed is the most common birth name in the world.",
+			[9] = "It takes about 7 minutes for the average person to fall asleep.",
+		},
+		color = 16555796,
+	},
 }
